@@ -169,7 +169,7 @@ func run() int {
 
 	logVerbose("getting balances")
 	// map from profile id to balances
-	balanceMapRWLock := new(sync.RWMutex)
+	balanceMapLock := new(sync.Mutex)
 	balanceMap := make(map[int][]wise.Balance, len(profileMap))
 	for _, p := range profileMap {
 		profileID := p.ID
@@ -191,9 +191,9 @@ func run() int {
 					return
 				}
 			}
-			balanceMapRWLock.Lock()
+			balanceMapLock.Lock()
 			balanceMap[profileID] = balances.Balances
-			balanceMapRWLock.Unlock()
+			balanceMapLock.Unlock()
 		}()
 	}
 	wg.Wait()
